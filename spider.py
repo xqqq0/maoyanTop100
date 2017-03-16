@@ -31,7 +31,16 @@ def parse_one_page(html):
                          + '.*?integer".*?>(.*?)</i>.*?fraction".*?>(.*?)</i></p>.*?</dd>', re.S)
     match = re.findall(pattern, html)
     if match:
-        print (len(match), match)
+        for item in match:
+            yield {
+                "index": item[0],
+                "image": item[1],
+                "title": item[2],
+                "star": item[3].strip().encode("utf-8")[3:],
+                "release_time": item[4].strip().encode("utf-8")[5:],
+                "score": item[5] + item[6]
+            }
+
     else:
         print ("匹配失败")
 
@@ -40,7 +49,8 @@ def parse_one_page(html):
 def main():
     url = "http://maoyan.com/board/4"
     html = get_one_page(url)
-    parse_one_page(html)
+    for item in  parse_one_page(html):
+        print (item)
 
 if __name__ == "__main__":
     main()

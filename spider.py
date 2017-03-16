@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import json
 import re
 import requests
 from requests.exceptions import RequestException
@@ -36,21 +37,25 @@ def parse_one_page(html):
                 "index": item[0],
                 "image": item[1],
                 "title": item[2],
-                "star": item[3].strip().encode("utf-8")[3:],
-                "release_time": item[4].strip().encode("utf-8")[5:],
+                "star": item[3].strip()[3:],
+                "release_time": item[4].strip()[5:],
                 "score": item[5] + item[6]
             }
 
     else:
         print ("匹配失败")
 
-
+def write_to_file(content):
+    with open("result.txt","a") as f:
+        # 字典转换为json字符串存储到文件
+        f.write(json.dumps(content) + "\n")
+        f.close()
 
 def main():
     url = "http://maoyan.com/board/4"
     html = get_one_page(url)
     for item in  parse_one_page(html):
-        print (item)
+        write_to_file(item)
 
 if __name__ == "__main__":
     main()

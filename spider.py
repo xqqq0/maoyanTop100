@@ -4,6 +4,11 @@ import re
 import requests
 from requests.exceptions import RequestException
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+
 '''
 1.获取单页的数据
 '''
@@ -45,16 +50,26 @@ def parse_one_page(html):
     else:
         print ("匹配失败")
 
+'''
+3，将获取到的数据转换为json格式存储到本地文件
+'''
 def write_to_file(content):
-    with open("result.txt","a") as f:
+    with open("result.txt", "a") as f:
         # 字典转换为json字符串存储到文件
-        f.write(json.dumps(content) + "\n")
+        f.write(json.dumps(content, ensure_ascii=False) + "\n")
         f.close()
 
+'''
+4.项目总调度
+'''
 def main():
+    # 主页面url
     url = "http://maoyan.com/board/4"
+    # 获取页面
     html = get_one_page(url)
+    # 遍历页面进行正则匹配
     for item in  parse_one_page(html):
+        # 写入文件
         write_to_file(item)
 
 if __name__ == "__main__":
